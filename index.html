@@ -112,8 +112,7 @@ footer{
 <script>
 async function loadAds(){
 
-  const { data, error } = await supabase
-    .from('ads')
+  const { data, error } = await supabaseClient.from("ads")
     .select('*')
     .order('id', { ascending: true });
 
