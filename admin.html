@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>관리자 페이지</title>
+<style>
+body {
+  font-family:Arial;
+  padding:20px;
+  background:#f5f5f5;
+}
+
+/* 전체 컨테이너 */
+.container {
+  max-width:1000px;   /* 브라우저 커져도 이 이상 안 늘어남 */
+  margin:0 auto;
+}
+
+/* 로그인 박스 */
+.login {
+  max-width:300px;
+  margin:60px auto;
+}
+
+/* 입력 & 버튼 사이즈 축소 */
+input {
+  width:100%;
+  padding:6px;
+  margin-bottom:8px;
+  font-size:13px;
+}
+
+button {
+  padding:8px;
+  width:100%;
+  font-size:13px;
+}
+
+/* 광고 그리드 */
+.grid {
+  display:grid;
+  grid-template-columns:repeat(6, 1fr);
+  gap:8px;
+}
+
+/* 구분선 */
+hr {
+  margin:25px 0;
+}
+
+.hidden {
+  display:none;
+}
+hr { margin:30px 0; }
+
+/* 로그인 입력 공통 */
+.login input {
+  width:100%;
+  padding:10px;
+  margin-bottom:10px;
+  box-sizing:border-box;
+}
+
+/* 비밀번호 입력란 와인색 테두리 */
+#loginPw {
+  border:2px solid #722f37; /* 와인색 */
+}
+
+/* 로그인 버튼 와인색 */
+.login-btn {
+  background:#722f37;
+  color:#fff;
+  border:none;
+  padding:12px;
+  width:100%;
+  cursor:pointer;
+}
+
+.login-btn:hover {
+  background:#5a232a;
+}
+
+/* 비밀번호 변경 영역 */
+.pw-box {
+  width:50%;
+  margin:0 auto;
+}
+
+/* 입력란 + 버튼 완전 동일 사이즈 */
+.pw-box input,
+.pw-box button {
+  width:100%;
+  height:36px;        /* ← 입력창과 버튼 높이 동일 */
+  padding:6px;
+  font-size:13px;
+  box-sizing:border-box;
+}
+
+/* 버튼 스타일만 색상 적용 */
+.pw-box button {
+  background:#722f37;   /* 와인색 */
+  color:#fff;
+  border:none;
+  cursor:pointer;
+}
+
+.pw-box button:hover {
+  background:#5a232a;
+}
+
+/* 저장 버튼 스타일 */
+.save-btn {
+  width:20%;          /* 20%로 축소 */
+  margin:20px auto;   /* 가운데 정렬 */
+  display:block;
+  padding:10px;
+  font-size:12px;
+}
+</style>
+</head>
+<body>
+
+<div class="login" id="loginBox">
+  <h3>관리자 로그인</h3>
+  <input type="text" id="loginId" placeholder="아이디">
+  <input type="password" id="loginPw" placeholder="비밀번호">
+  <button class="login-btn" onclick="login()">로그인</button>
+</div>
+
+<div id="adminBox" class="hidden">
+  <div class="container">
+
+<h2>상단 배너 관리</h2>
+<input id="bannerImg" placeholder="배너 이미지 URL">
+<input id="bannerLink" placeholder="배너 클릭 링크">
+<hr>
+
+    <h2>이미지 광고 관리</h2>
+    <div class="grid" id="imageAdmin"></div>
+
+    <h2 style="margin-top:30px;">텍스트 광고 관리</h2>
+    <div class="grid" id="textAdmin"></div>
+
+<button class="save-btn" onclick="save()">저장</button>
+
+<h3>사이트 소유자 설정</h3>
+<input id="ownerName" placeholder="사이트 소유자 이름 입력">
+
+    <hr>
+
+    <!-- 비밀번호 변경 맨 아래 -->
+<div class="pw-box">
+  <h3>비밀번호 변경</h3>
+  <input type="password" id="oldPw" placeholder="기존 비밀번호">
+  <input type="password" id="newPw" placeholder="새 비밀번호">
+  <button onclick="changePassword()">비밀번호 변경</button>
+</div>
+
+<script>
+if(!localStorage.getItem("adminId")){
+  localStorage.setItem("adminId","admin");
+}
+if(!localStorage.getItem("adminPassword")){
+  localStorage.setItem("adminPassword","1234");
+}
+
+function login(){
+  const id = loginId.value;
+  const pw = loginPw.value;
+
+  if(
+    id === localStorage.getItem("adminId") &&
+    pw === localStorage.getItem("adminPassword")
+  ){
+    loginBox.style.display="none";
+    adminBox.style.display="block";
+    loadAdmin();
+  }else{
+    alert("아이디 또는 비밀번호가 틀렸습니다");
+  }
+}
+
+function changePassword(){
+    const oldP = oldPw.value;
+    const newP = newPw.value;
+
+    if(oldP !== localStorage.getItem("adminPassword")){
+        alert("기존 비밀번호가 올바르지 않습니다");
+        return;
+    }
+    if(newP.length < 4){
+        alert("새 비밀번호는 4자 이상이어야 합니다");
+        return;
+    }
+    localStorage.setItem("adminPassword", newP);
+    oldPw.value = newPw.value = "";
+    alert("비밀번호가 변경되었습니다");
+}
+
+const banner = JSON.parse(localStorage.getItem("topBanner")) || {};
+bannerImg.value = banner.img || "";
+bannerLink.value = banner.link || "";
+
+function loadAdmin(){
+  window.imageAds =
+    JSON.parse(localStorage.getItem('imageAds')) ||
+    Array.from({length:30}, ()=>({ img:"", link:"" }));
+
+  window.textAds =
+    JSON.parse(localStorage.getItem('textAds')) ||
+    Array.from({length:30}, ()=>({ text:"", link:"" }));
+
+  imageAdmin.innerHTML = "";
+  textAdmin.innerHTML = "";
+
+  // 이미지 광고 관리
+  imageAds.forEach((ad,i)=>{
+    const wrap = document.createElement('div');
+
+    const img = document.createElement('input');
+    img.placeholder = "이미지 URL";
+    img.value = ad.img;
+    img.oninput = e => imageAds[i].img = e.target.value;
+
+    const link = document.createElement('input');
+    link.placeholder = "클릭 링크 URL";
+    link.value = ad.link;
+    link.oninput = e => imageAds[i].link = e.target.value;
+
+    wrap.appendChild(img);
+    wrap.appendChild(link);
+    imageAdmin.appendChild(wrap);
+  });
+
+  // 텍스트 광고 관리
+  textAds.forEach((ad,i)=>{
+    const wrap = document.createElement('div');
+
+    const text = document.createElement('input');
+    text.placeholder = "광고 텍스트";
+    text.value = ad.text;
+    text.oninput = e => textAds[i].text = e.target.value;
+
+    const link = document.createElement('input');
+    link.placeholder = "클릭 링크 URL";
+    link.value = ad.link;
+    link.oninput = e => textAds[i].link = e.target.value;
+
+    wrap.appendChild(text);
+    wrap.appendChild(link);
+    textAdmin.appendChild(wrap);
+  });
+}
+
+function save(){
+
+  // 🔥 배너 저장 추가
+  localStorage.setItem("topBanner", JSON.stringify({
+    img: bannerImg.value.trim(),
+    link: bannerLink.value.trim()
+  }));
+
+  localStorage.setItem("siteOwner", ownerName.value.trim());
+  localStorage.setItem('imageAds', JSON.stringify(imageAds));
+  localStorage.setItem('textAds', JSON.stringify(textAds));
+
+  alert("저장 완료");
+}
+
+ownerName.value = localStorage.getItem("siteOwner") || "";
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+
+<script>
+
+async function addAd(type, title, image, link){
+
+  const { error } = await supabase
+    .from("ads")
+    .insert([
+      {
+        type: type,
+        title: title,
+        image_url: image,
+        link_url: link
+      }
+    ]);
+
+  if(error){
+    alert("에러 발생");
+    console.log(error);
+  }else{
+    alert("저장 완료");
+  }
+}
+
+</script>
+
+</body>
+</html>
