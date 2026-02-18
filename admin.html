@@ -187,18 +187,10 @@ async function login(){
   loadData();
 }
 
+// 🔁 로그인 유지
 supabaseClient.auth.onAuthStateChange((event, session) => {
   if (session) {
     console.log("세션 유지됨");
-  }
-});
-
-// 🔁 로그인 유지
-supabaseClient.auth.getSession().then(({ data })=>{
-  if(data.session){
-    loginBox.style.display="none";
-    adminBox.style.display="block";
-    loadData();
   }
 });
 
@@ -250,20 +242,6 @@ async function loadData(){
 }
 
 // 💾 저장
-async function save(){
-
-  const { data: { session } } =
-    await supabaseClient.auth.getSession();
-
-  if(!session){
-    alert("로그인이 필요합니다");
-    return;
-  }
-
-  console.log("현재 세션:", session);
-
-  // ↓ 기존 저장 코드 계속
-
 async function save(){
 
   // 광고 전체 삭제
