@@ -252,18 +252,6 @@ async function loadData(){
 // 💾 저장
 async function save(){
 
-  const { data: { session } } =
-    await supabaseClient.auth.getSession();
-
-  if(!session){
-    alert("로그인이 필요합니다");
-    return;
-  }
-
-  console.log("현재 세션:", session);
-
-  // ↓ 기존 저장 코드 계속
-
   // 광고 전체 삭제
   await supabaseClient.from("ads").delete().neq("id",0);
 
