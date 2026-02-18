@@ -167,20 +167,21 @@ async function login(){
   const email = document.getElementById("loginId").value;
   const password = document.getElementById("loginPw").value;
 
-  const { data, error } = await supabaseClient.auth.signInWithPassword({
-    email: email,
-    password: password
-  });
+  const { data, error } =
+    await supabaseClient.auth.signInWithPassword({
+      email,
+      password
+    });
 
   if(error){
     alert("로그인 실패");
-    console.log(error);
     return;
   }
 
   loginBox.style.display="none";
   adminBox.style.display="block";
-  loadAdmin();
+
+  loadAdmin();   // 🔥 이 줄 반드시 필요
 }
 
 // 로그인 유지 체크
@@ -188,7 +189,7 @@ supabaseClient.auth.getSession().then(({ data })=>{
   if(data.session){
     loginBox.style.display="none";
     adminBox.style.display="block";
-    loadAdmin();
+    loadAdmin();   // 🔥 이것도 반드시 필요
   }
 });
 
