@@ -175,6 +175,14 @@ hr { margin:30px 0; }
 <button class="save-btn" onclick="save()">저장</button>
 
 <h3>사이트 소유자 설정</h3>
+
+<h3>SNS 링크 설정</h3>
+
+<input id="snsInstagram" placeholder="Instagram 링크">
+<input id="snsYoutube" placeholder="YouTube 링크">
+<input id="snsFacebook" placeholder="Facebook 링크">
+<input id="snsTwitter" placeholder="X (Twitter) 링크">
+
 <input id="ownerName" placeholder="사이트 소유자 이름 입력">
 
     <hr>
@@ -258,11 +266,18 @@ async function loadData() {
     .select("*")
     .limit(1);
 
-  if (settings && settings.length > 0) {
-    bannerImg.value = settings[0].banner_img || "";
-    bannerLink.value = settings[0].banner_link || "";
-    ownerName.value = settings[0].owner_name || "";
-  }
+if (settings && settings.length > 0) {
+
+  const s = settings[0];
+
+  bannerImg.value = s.banner_img || "";
+  bannerLink.value = s.banner_link || "";
+  ownerName.value = s.owner_name || "";
+
+  snsInstagram.value = s.instagram || "";
+  snsYoutube.value = s.youtube || "";
+  snsFacebook.value = s.facebook || "";
+  snsTwitter.value = s.twitter || "";
 }
 
 async function save() {
@@ -327,13 +342,17 @@ async function save() {
     .delete()
     .neq("id", 0);
 
-  await supabaseClient
-    .from("site_settings")
-    .insert([{
-      banner_img: bannerImg.value.trim(),
-      banner_link: bannerLink.value.trim(),
-      owner_name: ownerName.value.trim()
-    }]);
+await supabaseClient
+  .from("site_settings")
+  .insert([{
+    banner_img: bannerImg.value.trim(),
+    banner_link: bannerLink.value.trim(),
+    owner_name: ownerName.value.trim(),
+    instagram: snsInstagram.value.trim(),
+    youtube: snsYoutube.value.trim(),
+    facebook: snsFacebook.value.trim(),
+    twitter: snsTwitter.value.trim()
+  }]);
 
   alert("저장 완료");
 }
