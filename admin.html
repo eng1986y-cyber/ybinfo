@@ -175,14 +175,6 @@ hr { margin:30px 0; }
 <button class="save-btn" onclick="save()">저장</button>
 
 <h3>사이트 소유자 설정</h3>
-
-<h3>SNS 링크 설정</h3>
-
-<input id="snsInstagram" placeholder="Instagram 링크">
-<input id="snsYoutube" placeholder="YouTube 링크">
-<input id="snsFacebook" placeholder="Facebook 링크">
-<input id="snsTwitter" placeholder="X (Twitter) 링크">
-
 <input id="ownerName" placeholder="사이트 소유자 이름 입력">
 
     <hr>
@@ -204,24 +196,27 @@ hr { margin:30px 0; }
 
 async function login() {
 
-  const email = loginId.value;
-  const password = loginPw.value;
+  const email = document.getElementById("loginId").value;
+  const password = document.getElementById("loginPw").value;
 
-  const { error } =
+  const { data, error } =
     await supabaseClient.auth.signInWithPassword({
-      email,
-      password
+      email: email,
+      password: password
     });
 
   if (error) {
     alert("로그인 실패");
+    console.log(error);
     return;
   }
 
   loginBox.style.display = "none";
   adminBox.style.display = "block";
+
   loadData();
 }
+
 
 supabaseClient.auth.getSession().then(({ data }) => {
   if (data.session) {
@@ -241,34 +236,32 @@ async function loadData() {
     .select("*")
     .order("id", { ascending: true });
 
-  if (ads) {
+  if (ads && ads.length > 0) {
+
     ads.forEach(ad => {
+
       if (ad.type === "image") {
         addImageAd(ad.image_url || "", ad.link_url || "");
       }
+
       if (ad.type === "text") {
         addTextAd(ad.title || "", ad.link_url || "");
       }
+
     });
+
   }
 
+  // 사이트 설정
   const { data: settings } = await supabaseClient
     .from("site_settings")
     .select("*")
     .limit(1);
 
   if (settings && settings.length > 0) {
-
-    const s = settings[0];
-
-    bannerImg.value = s.banner_img || "";
-    bannerLink.value = s.banner_link || "";
-    ownerName.value = s.owner_name || "";
-
-    snsInstagram.value = s.instagram || "";
-    snsYoutube.value = s.youtube || "";
-    snsFacebook.value = s.facebook || "";
-    snsTwitter.value = s.twitter || "";
+    bannerImg.value = settings[0].banner_img || "";
+    bannerLink.value = settings[0].banner_link || "";
+    ownerName.value = settings[0].owner_name || "";
   }
 }
 
@@ -282,14 +275,23 @@ async function save() {
     return;
   }
 
-  await supabaseClient.from("ads").delete().neq("id", 0);
+  // 1️⃣ 기존 광고 전체 삭제
+  await supabaseClient
+    .from("ads")
+    .delete()
+    .neq("id", 0);
 
-  for (let block of imageAdmin.children) {
+  // 2️⃣ 이미지 광고 현재 화면 순서대로 저장
+  const imgBlocks = imageAdmin.children;
+
+  for (let block of imgBlocks) {
+
     const inputs = block.querySelectorAll("input");
+
     const img = inputs[0].value.trim();
     const link = inputs[1].value.trim();
 
-    if (img) {
+    if (img !== "") {
       await supabaseClient.from("ads").insert([{
         type: "image",
         title: "",
@@ -299,12 +301,17 @@ async function save() {
     }
   }
 
-  for (let block of textAdmin.children) {
+  // 3️⃣ 텍스트 광고 현재 화면 순서대로 저장
+  const txtBlocks = textAdmin.children;
+
+  for (let block of txtBlocks) {
+
     const inputs = block.querySelectorAll("input");
+
     const text = inputs[0].value.trim();
     const link = inputs[1].value.trim();
 
-    if (text) {
+    if (text !== "") {
       await supabaseClient.from("ads").insert([{
         type: "text",
         title: text,
@@ -314,21 +321,24 @@ async function save() {
     }
   }
 
-  await supabaseClient.from("site_settings").delete().neq("id", 0);
+  // 4️⃣ 사이트 설정 저장
+  await supabaseClient
+    .from("site_settings")
+    .delete()
+    .neq("id", 0);
 
-  await supabaseClient.from("site_settings").insert([{
-    banner_img: bannerImg.value.trim(),
-    banner_link: bannerLink.value.trim(),
-    owner_name: ownerName.value.trim(),
-    instagram: snsInstagram.value.trim(),
-    youtube: snsYoutube.value.trim(),
-    facebook: snsFacebook.value.trim(),
-    twitter: snsTwitter.value.trim()
-  }]);
+  await supabaseClient
+    .from("site_settings")
+    .insert([{
+      banner_img: bannerImg.value.trim(),
+      banner_link: bannerLink.value.trim(),
+      owner_name: ownerName.value.trim()
+    }]);
 
   alert("저장 완료");
 }
 
+// 이미지 광고 입력칸 추가
 function addImageAd(img = "", link = "") {
   const div = document.createElement("div");
   div.innerHTML = `
@@ -344,6 +354,7 @@ function removeImageAd() {
   }
 }
 
+// 텍스트 광고 입력칸 추가
 function addTextAd(title = "", link = "") {
   const div = document.createElement("div");
   div.innerHTML = `
@@ -359,11 +370,13 @@ function removeTextAd() {
   }
 }
 
+// 이미지 광고 드래그 정렬
 new Sortable(imageAdmin, {
   animation: 150,
   ghostClass: 'dragging'
 });
 
+// 텍스트 광고 드래그 정렬
 new Sortable(textAdmin, {
   animation: 150,
   ghostClass: 'dragging'
