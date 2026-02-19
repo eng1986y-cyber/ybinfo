@@ -275,15 +275,23 @@ async function save() {
     return;
   }
 
-  await supabaseClient.from("ads").delete().neq("id", 0);
+  // 1️⃣ 기존 광고 전체 삭제
+  await supabaseClient
+    .from("ads")
+    .delete()
+    .neq("id", 0);
 
-  const imgInputs = imageAdmin.querySelectorAll("input");
-  for (let i = 0; i < imgInputs.length; i += 2) {
+  // 2️⃣ 이미지 광고 현재 화면 순서대로 저장
+  const imgBlocks = imageAdmin.children;
 
-    const img = imgInputs[i].value.trim();
-    const link = imgInputs[i + 1].value.trim();
+  for (let block of imgBlocks) {
 
-    if (img) {
+    const inputs = block.querySelectorAll("input");
+
+    const img = inputs[0].value.trim();
+    const link = inputs[1].value.trim();
+
+    if (img !== "") {
       await supabaseClient.from("ads").insert([{
         type: "image",
         title: "",
@@ -293,13 +301,17 @@ async function save() {
     }
   }
 
-  const txtInputs = textAdmin.querySelectorAll("input");
-  for (let i = 0; i < txtInputs.length; i += 2) {
+  // 3️⃣ 텍스트 광고 현재 화면 순서대로 저장
+  const txtBlocks = textAdmin.children;
 
-    const text = txtInputs[i].value.trim();
-    const link = txtInputs[i + 1].value.trim();
+  for (let block of txtBlocks) {
 
-    if (text) {
+    const inputs = block.querySelectorAll("input");
+
+    const text = inputs[0].value.trim();
+    const link = inputs[1].value.trim();
+
+    if (text !== "") {
       await supabaseClient.from("ads").insert([{
         type: "text",
         title: text,
@@ -309,14 +321,19 @@ async function save() {
     }
   }
 
-  await supabaseClient.from("site_settings")
-    .delete().neq("id", 0);
+  // 4️⃣ 사이트 설정 저장
+  await supabaseClient
+    .from("site_settings")
+    .delete()
+    .neq("id", 0);
 
-  await supabaseClient.from("site_settings").insert([{
-    banner_img: bannerImg.value.trim(),
-    banner_link: bannerLink.value.trim(),
-    owner_name: ownerName.value.trim()
-  }]);
+  await supabaseClient
+    .from("site_settings")
+    .insert([{
+      banner_img: bannerImg.value.trim(),
+      banner_link: bannerLink.value.trim(),
+      owner_name: ownerName.value.trim()
+    }]);
 
   alert("저장 완료");
 }
