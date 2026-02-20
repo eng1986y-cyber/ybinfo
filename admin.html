@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <title>관리자 페이지</title>
-<style>
 
+<style>
 body{
   margin:0;
   padding:30px;
@@ -12,21 +12,19 @@ body{
   background:#f5f5f5;
 }
 
-h2{
-  margin-top:40px;
-}
+h2{ margin-top:40px; }
 
 input{
   width:100%;
-  height:38px;
+  height:36px;
   margin-bottom:6px;
   padding:0 8px;
   box-sizing:border-box;
 }
 
 button{
-  height:38px;
-  padding:0 15px;
+  height:36px;
+  padding:0 12px;
   border:none;
   background:#87CEEB;
   color:#fff;
@@ -34,15 +32,16 @@ button{
   border-radius:6px;
 }
 
-button:hover{
-  background:#6bbfe0;
+button:hover{ background:#6bbfe0; }
+
+.section{
+  margin-bottom:30px;
 }
 
 .grid{
   display:grid;
   grid-template-columns:repeat(3,1fr);
   gap:10px;
-  margin-bottom:20px;
 }
 
 .card{
@@ -50,6 +49,17 @@ button:hover{
   padding:10px;
   border:1px solid #ddd;
   border-radius:8px;
+  cursor:grab;
+  position:relative;
+}
+
+.delete-btn{
+  position:absolute;
+  top:6px;
+  right:6px;
+  background:#ff5c5c;
+  height:24px;
+  font-size:12px;
 }
 
 .save-btn{
@@ -59,33 +69,38 @@ button:hover{
   height:45px;
   font-size:16px;
 }
-
 </style>
 </head>
 <body>
 
 <h1>관리자 페이지</h1>
 
-<!-- ================= 이미지 광고 ================= -->
+<!-- ================== 상단 배너 (맨 위) ================== -->
+<div class="section">
+<h2>상단 배너 관리</h2>
+<input id="bannerImg" placeholder="배너 이미지 URL">
+<input id="bannerLink" placeholder="배너 클릭 링크">
+</div>
+
+<!-- ================== 이미지 광고 ================== -->
+<div class="section">
 <h2>상단 이미지 광고</h2>
 <button onclick="addImageAd()">추가 +</button>
 <div class="grid" id="imageAdmin"></div>
+</div>
 
-<!-- ================= 텍스트 광고 ================= -->
+<!-- ================== 텍스트 광고 ================== -->
+<div class="section">
 <h2>텍스트 광고</h2>
 <button onclick="addTextAd()">추가 +</button>
 <div class="grid" id="textAdmin"></div>
+</div>
 
-<!-- ================= 정방형 광고 ================= -->
+<!-- ================== 정방형 광고 ================== -->
+<div class="section">
 <h2>하단 정방형 광고</h2>
 <button onclick="addSquareAd()">추가 +</button>
 <div class="grid" id="squareAdmin"></div>
-
-<!-- ================= 배너 ================= -->
-<h2>상단 배너</h2>
-<div class="card">
-  <input id="bannerImg" placeholder="배너 이미지 URL">
-  <input id="bannerLink" placeholder="배너 클릭 링크">
 </div>
 
 <button class="save-btn" onclick="saveAll()">저장하기</button>
@@ -99,36 +114,57 @@ const imageAdmin=document.getElementById("imageAdmin");
 const textAdmin=document.getElementById("textAdmin");
 const squareAdmin=document.getElementById("squareAdmin");
 
-/* ================= 추가 함수 ================= */
+let dragItem=null;
 
-function addImageAd(img="",link=""){
+/* ================= 공통 카드 생성 ================= */
+
+function createCard(innerHTML){
   const div=document.createElement("div");
   div.className="card";
+  div.draggable=true;
   div.innerHTML=`
-    <input value="${img}" placeholder="이미지 URL">
-    <input value="${link}" placeholder="클릭 링크">
+    <button class="delete-btn" onclick="this.parentElement.remove()">삭제</button>
+    ${innerHTML}
   `;
-  imageAdmin.appendChild(div);
+
+  div.addEventListener("dragstart",()=>dragItem=div);
+  div.addEventListener("dragover",e=>e.preventDefault());
+  div.addEventListener("drop",function(){
+    if(dragItem!==div){
+      div.parentNode.insertBefore(dragItem,div);
+    }
+  });
+
+  return div;
+}
+
+/* ================= 추가 ================= */
+
+function addImageAd(img="",link=""){
+  imageAdmin.appendChild(
+    createCard(`
+      <input value="${img}" placeholder="이미지 URL">
+      <input value="${link}" placeholder="클릭 링크">
+    `)
+  );
 }
 
 function addTextAd(title="",link=""){
-  const div=document.createElement("div");
-  div.className="card";
-  div.innerHTML=`
-    <input value="${title}" placeholder="광고 제목">
-    <input value="${link}" placeholder="클릭 링크">
-  `;
-  textAdmin.appendChild(div);
+  textAdmin.appendChild(
+    createCard(`
+      <input value="${title}" placeholder="광고 제목">
+      <input value="${link}" placeholder="클릭 링크">
+    `)
+  );
 }
 
 function addSquareAd(img="",link=""){
-  const div=document.createElement("div");
-  div.className="card";
-  div.innerHTML=`
-    <input value="${img}" placeholder="이미지 URL">
-    <input value="${link}" placeholder="클릭 링크">
-  `;
-  squareAdmin.appendChild(div);
+  squareAdmin.appendChild(
+    createCard(`
+      <input value="${img}" placeholder="이미지 URL">
+      <input value="${link}" placeholder="클릭 링크">
+    `)
+  );
 }
 
 /* ================= 불러오기 ================= */
@@ -142,9 +178,9 @@ async function loadData(){
 
   if(ads){
     ads.forEach(ad=>{
-      if(ad.type==="image") addImageAd(ad.image_url, ad.link_url);
-      if(ad.type==="text") addTextAd(ad.title, ad.link_url);
-      if(ad.type==="square") addSquareAd(ad.image_url, ad.link_url);
+      if(ad.type==="image") addImageAd(ad.image_url,ad.link_url);
+      if(ad.type==="text") addTextAd(ad.title,ad.link_url);
+      if(ad.type==="square") addSquareAd(ad.image_url,ad.link_url);
     });
   }
 
@@ -154,8 +190,8 @@ async function loadData(){
     .limit(1);
 
   if(settings && settings.length>0){
-    document.getElementById("bannerImg").value=settings[0].banner_img || "";
-    document.getElementById("bannerLink").value=settings[0].banner_link || "";
+    bannerImg.value=settings[0].banner_img||"";
+    bannerLink.value=settings[0].banner_link||"";
   }
 }
 
@@ -163,52 +199,47 @@ async function loadData(){
 
 async function saveAll(){
 
-  /* 기존 광고 전체 삭제 */
   await supabaseClient.from("ads").delete().neq("id",0);
 
-  /* 이미지 광고 저장 */
   for(const block of imageAdmin.children){
-    const inputs=block.querySelectorAll("input");
-    if(inputs[0].value.trim()){
+    const i=block.querySelectorAll("input");
+    if(i[0].value.trim()){
       await supabaseClient.from("ads").insert([{
         type:"image",
-        image_url:inputs[0].value.trim(),
-        link_url:inputs[1].value.trim()
+        image_url:i[0].value.trim(),
+        link_url:i[1].value.trim()
       }]);
     }
   }
 
-  /* 텍스트 광고 저장 */
   for(const block of textAdmin.children){
-    const inputs=block.querySelectorAll("input");
-    if(inputs[0].value.trim()){
+    const i=block.querySelectorAll("input");
+    if(i[0].value.trim()){
       await supabaseClient.from("ads").insert([{
         type:"text",
-        title:inputs[0].value.trim(),
-        link_url:inputs[1].value.trim()
+        title:i[0].value.trim(),
+        link_url:i[1].value.trim()
       }]);
     }
   }
 
-  /* 정방형 광고 저장 */
   for(const block of squareAdmin.children){
-    const inputs=block.querySelectorAll("input");
-    if(inputs[0].value.trim()){
+    const i=block.querySelectorAll("input");
+    if(i[0].value.trim()){
       await supabaseClient.from("ads").insert([{
         type:"square",
-        image_url:inputs[0].value.trim(),
-        link_url:inputs[1].value.trim()
+        image_url:i[0].value.trim(),
+        link_url:i[1].value.trim()
       }]);
     }
   }
 
-  /* 배너 저장 */
   await supabaseClient
     .from("site_settings")
     .upsert([{
       id:1,
-      banner_img:document.getElementById("bannerImg").value.trim(),
-      banner_link:document.getElementById("bannerLink").value.trim()
+      banner_img:bannerImg.value.trim(),
+      banner_link:bannerLink.value.trim()
     }]);
 
   alert("저장 완료 ✅");
