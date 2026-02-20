@@ -172,7 +172,31 @@ hr { margin:30px 0; }
 
 <div class="grid" id="textAdmin"></div>
 
+<h2 style="margin-top:30px;">하단 정방형 이미지 광고 관리</h2>
+
+<div class="btn-row">
+  <button type="button" class="mini-btn" onclick="addSquareAd()">광고 추가 +</button>
+  <button type="button" class="mini-btn" onclick="removeSquareAd()">광고 삭제 −</button>
+</div>
+
+<div class="grid" id="squareAdmin"></div>
+
 <button class="save-btn" onclick="save()">저장</button>
+
+for (let block of squareAdmin.children) {
+  const inputs = block.querySelectorAll("input");
+  const img = inputs[0].value.trim();
+  const link = inputs[1].value.trim();
+
+  if (img) {
+    await supabaseClient.from("ads").insert([{
+      type: "square",
+      title: "",
+      image_url: img,
+      link_url: link
+    }]);
+  }
+}
 
 <h3>사이트 소유자 설정</h3>
 
@@ -232,6 +256,10 @@ supabaseClient.auth.getSession().then(({ data }) => {
 });
 
 async function loadData() {
+
+if (ad.type === "square") {
+  addSquareAd(ad.image_url || "", ad.link_url || "");
+}
 
   imageAdmin.innerHTML = "";
   textAdmin.innerHTML = "";
@@ -329,18 +357,18 @@ async function save() {
   alert("저장 완료");
 }
 
-function addImageAd(img = "", link = "") {
+function addSquareAd(img = "", link = "") {
   const div = document.createElement("div");
   div.innerHTML = `
     <input value="${img}" placeholder="이미지 URL">
     <input value="${link}" placeholder="클릭 링크">
   `;
-  imageAdmin.appendChild(div);
+  squareAdmin.appendChild(div);
 }
 
-function removeImageAd() {
-  if (imageAdmin.lastElementChild) {
-    imageAdmin.removeChild(imageAdmin.lastElementChild);
+function removeSquareAd() {
+  if (squareAdmin.lastElementChild) {
+    squareAdmin.removeChild(squareAdmin.lastElementChild);
   }
 }
 
