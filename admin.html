@@ -5,267 +5,146 @@
 <title>관리자 페이지</title>
 <style>
 
-.dragging {
-  opacity: 0.5;
-  background: #e0f7ff;
-}
-
-.btn-row {
-  display:flex;
-  gap:8px;
-  margin-bottom:10px;
-}
-
-.mini-btn {
-  padding:4px 8px;
-  font-size:12px;
-  width:auto;
-  cursor:pointer;
-}
-
-body {
+body{
+  margin:0;
+  padding:30px;
   font-family:Arial;
-  padding:20px;
   background:#f5f5f5;
 }
 
-/* 전체 컨테이너 */
-.container {
-  max-width:1000px;   /* 브라우저 커져도 이 이상 안 늘어남 */
-  margin:0 auto;
+h2{
+  margin-top:40px;
 }
 
-/* 로그인 박스 */
-.login {
-  max-width:300px;
-  margin:60px auto;
-}
-
-/* 입력 & 버튼 사이즈 축소 */
-input {
+input{
   width:100%;
-  padding:6px;
-  margin-bottom:8px;
-  font-size:13px;
+  height:38px;
+  margin-bottom:6px;
+  padding:0 8px;
+  box-sizing:border-box;
 }
 
-button {
-  padding:8px;
-  width:100%;
-  font-size:13px;
+button{
+  height:38px;
+  padding:0 15px;
+  border:none;
+  background:#87CEEB;
+  color:#fff;
+  cursor:pointer;
+  border-radius:6px;
 }
 
-/* 광고 그리드 */
-.grid {
+button:hover{
+  background:#6bbfe0;
+}
+
+.grid{
   display:grid;
-  grid-template-columns:repeat(6, 1fr);
-  gap:8px;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-bottom:20px;
 }
 
-/* 구분선 */
-hr {
-  margin:25px 0;
-}
-
-.hidden {
-  display:none;
-}
-hr { margin:30px 0; }
-
-/* 로그인 입력 공통 */
-.login input {
-  width:100%;
+.card{
+  background:#fff;
   padding:10px;
-  margin-bottom:10px;
-  box-sizing:border-box;
+  border:1px solid #ddd;
+  border-radius:8px;
 }
 
-/* 비밀번호 입력란 와인색 테두리 */
-#loginPw {
-  border:2px solid #722f37; /* 와인색 */
-}
-
-/* 로그인 버튼 와인색 */
-.login-btn {
-  background:#722f37;
-  color:#fff;
-  border:none;
-  padding:12px;
-  width:100%;
-  cursor:pointer;
-}
-
-.login-btn:hover {
-  background:#5a232a;
-}
-
-/* 비밀번호 변경 영역 */
-.pw-box {
-  width:50%;
-  margin:0 auto;
-}
-
-/* 입력란 + 버튼 완전 동일 사이즈 */
-.pw-box input,
-.pw-box button {
-  width:100%;
-  height:36px;        /* ← 입력창과 버튼 높이 동일 */
-  padding:6px;
-  font-size:13px;
-  box-sizing:border-box;
-}
-
-/* 버튼 스타일만 색상 적용 */
-.pw-box button {
-  background:#722f37;   /* 와인색 */
-  color:#fff;
-  border:none;
-  cursor:pointer;
-}
-
-.pw-box button:hover {
-  background:#5a232a;
-}
-
-/* 저장 버튼 스타일 */
-.save-btn {
-  width:20%;          /* 20%로 축소 */
-  margin:20px auto;   /* 가운데 정렬 */
+.save-btn{
+  width:200px;
   display:block;
-  padding:10px;
-  font-size:12px;
+  margin:40px auto;
+  height:45px;
+  font-size:16px;
 }
+
 </style>
 </head>
 <body>
 
-<div class="login" id="loginBox">
-  <h3>관리자 로그인</h3>
-  <input type="text" id="loginId" placeholder="아이디">
-  <input type="password" id="loginPw" placeholder="비밀번호">
-  <button class="login-btn" onclick="login()">로그인</button>
-</div>
+<h1>관리자 페이지</h1>
 
-<div id="adminBox" class="hidden">
-  <div class="container">
-
-<h2>상단 배너 관리</h2>
-<input id="bannerImg" placeholder="배너 이미지 URL">
-<input id="bannerLink" placeholder="배너 클릭 링크">
-<hr>
-
-<h2>이미지 광고 관리</h2>
-
-<div class="btn-row">
-  <button type="button" class="mini-btn" onclick="addImageAd()">광고 추가 +</button>
-  <button type="button" class="mini-btn" onclick="removeImageAd()">광고 삭제 −</button>
-</div>
-
+<!-- ================= 이미지 광고 ================= -->
+<h2>상단 이미지 광고</h2>
+<button onclick="addImageAd()">추가 +</button>
 <div class="grid" id="imageAdmin"></div>
 
-<h2 style="margin-top:30px;">텍스트 광고 관리</h2>
-
-<div class="btn-row">
-  <button type="button" class="mini-btn" onclick="addTextAd()">광고 추가 +</button>
-  <button type="button" class="mini-btn" onclick="removeTextAd()">광고 삭제 −</button>
-</div>
-
+<!-- ================= 텍스트 광고 ================= -->
+<h2>텍스트 광고</h2>
+<button onclick="addTextAd()">추가 +</button>
 <div class="grid" id="textAdmin"></div>
 
-<h2 style="margin-top:30px;">하단 정방형 이미지 광고 관리</h2>
-
-<div class="btn-row">
-  <button type="button" class="mini-btn" onclick="addSquareAd()">광고 추가 +</button>
-  <button type="button" class="mini-btn" onclick="removeSquareAd()">광고 삭제 −</button>
-</div>
-
+<!-- ================= 정방형 광고 ================= -->
+<h2>하단 정방형 광고</h2>
+<button onclick="addSquareAd()">추가 +</button>
 <div class="grid" id="squareAdmin"></div>
 
-<button class="save-btn" onclick="save()">저장</button>
-
-<h3>사이트 소유자 설정</h3>
-
-<h3>SNS 링크 설정</h3>
-
-<input id="snsInstagram" placeholder="Instagram 링크">
-<input id="snsYoutube" placeholder="YouTube 링크">
-<input id="snsFacebook" placeholder="Facebook 링크">
-<input id="snsTwitter" placeholder="X (Twitter) 링크">
-
-<input id="ownerName" placeholder="사이트 소유자 이름 입력">
-
-    <hr>
-
-    <!-- 비밀번호 변경 맨 아래 -->
-<div class="pw-box">
-  <h3>비밀번호 변경</h3>
-  <input type="password" id="oldPw" placeholder="기존 비밀번호">
-  <input type="password" id="newPw" placeholder="새 비밀번호">
-  <button onclick="changePassword()">비밀번호 변경</button>
+<!-- ================= 배너 ================= -->
+<h2>상단 배너</h2>
+<div class="card">
+  <input id="bannerImg" placeholder="배너 이미지 URL">
+  <input id="bannerLink" placeholder="배너 클릭 링크">
 </div>
+
+<button class="save-btn" onclick="saveAll()">저장하기</button>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-
 <script>
 
-async function login() {
+const imageAdmin=document.getElementById("imageAdmin");
+const textAdmin=document.getElementById("textAdmin");
+const squareAdmin=document.getElementById("squareAdmin");
 
-  const email = loginId.value;
-  const password = loginPw.value;
+/* ================= 추가 함수 ================= */
 
-  const { error } =
-    await supabaseClient.auth.signInWithPassword({
-      email,
-      password
-    });
-
-  if (error) {
-    alert("로그인 실패");
-    return;
-  }
-
-  loginBox.style.display = "none";
-  adminBox.style.display = "block";
-  loadData();
+function addImageAd(img="",link=""){
+  const div=document.createElement("div");
+  div.className="card";
+  div.innerHTML=`
+    <input value="${img}" placeholder="이미지 URL">
+    <input value="${link}" placeholder="클릭 링크">
+  `;
+  imageAdmin.appendChild(div);
 }
 
-supabaseClient.auth.getSession().then(({ data }) => {
-  if (data.session) {
-    loginBox.style.display = "none";
-    adminBox.style.display = "block";
-    loadData();
-  }
-});
+function addTextAd(title="",link=""){
+  const div=document.createElement("div");
+  div.className="card";
+  div.innerHTML=`
+    <input value="${title}" placeholder="광고 제목">
+    <input value="${link}" placeholder="클릭 링크">
+  `;
+  textAdmin.appendChild(div);
+}
 
-async function loadData() {
+function addSquareAd(img="",link=""){
+  const div=document.createElement("div");
+  div.className="card";
+  div.innerHTML=`
+    <input value="${img}" placeholder="이미지 URL">
+    <input value="${link}" placeholder="클릭 링크">
+  `;
+  squareAdmin.appendChild(div);
+}
 
-  imageAdmin.innerHTML = "";
-  textAdmin.innerHTML = "";
-  squareAdmin.innerHTML = "";
+/* ================= 불러오기 ================= */
+
+async function loadData(){
 
   const { data: ads } = await supabaseClient
     .from("ads")
     .select("*")
-    .order("id", { ascending: true });
+    .order("id",{ascending:true});
 
-  if (ads) {
-    ads.forEach(ad => {
-
-      if (ad.type === "image") {
-        addImageAd(ad.image_url || "", ad.link_url || "");
-      }
-
-      if (ad.type === "text") {
-        addTextAd(ad.title || "", ad.link_url || "");
-      }
-
-      if (ad.type === "square") {
-        addSquareAd(ad.image_url || "", ad.link_url || "");
-      }
-
+  if(ads){
+    ads.forEach(ad=>{
+      if(ad.type==="image") addImageAd(ad.image_url, ad.link_url);
+      if(ad.type==="text") addTextAd(ad.title, ad.link_url);
+      if(ad.type==="square") addSquareAd(ad.image_url, ad.link_url);
     });
   }
 
@@ -274,132 +153,68 @@ async function loadData() {
     .select("*")
     .limit(1);
 
-  if (settings && settings.length > 0) {
-
-    const s = settings[0];
-
-    bannerImg.value = s.banner_img || "";
-    bannerLink.value = s.banner_link || "";
-    ownerName.value = s.owner_name || "";
-
-    snsInstagram.value = s.instagram || "";
-    snsYoutube.value = s.youtube || "";
-    snsFacebook.value = s.facebook || "";
-    snsTwitter.value = s.twitter || "";
+  if(settings && settings.length>0){
+    document.getElementById("bannerImg").value=settings[0].banner_img || "";
+    document.getElementById("bannerLink").value=settings[0].banner_link || "";
   }
 }
 
-async function save() {
+/* ================= 저장 ================= */
 
-  const { data: { session } } =
-    await supabaseClient.auth.getSession();
+async function saveAll(){
 
-  if (!session) {
-    alert("로그인이 필요합니다");
-    return;
-  }
+  /* 기존 광고 전체 삭제 */
+  await supabaseClient.from("ads").delete().neq("id",0);
 
-  await supabaseClient.from("ads").delete().neq("id", 0);
-
-  for (let block of imageAdmin.children) {
-    const inputs = block.querySelectorAll("input");
-    const img = inputs[0].value.trim();
-    const link = inputs[1].value.trim();
-
-    if (img) {
+  /* 이미지 광고 저장 */
+  for(const block of imageAdmin.children){
+    const inputs=block.querySelectorAll("input");
+    if(inputs[0].value.trim()){
       await supabaseClient.from("ads").insert([{
-        type: "image",
-        title: "",
-        image_url: img,
-        link_url: link
+        type:"image",
+        image_url:inputs[0].value.trim(),
+        link_url:inputs[1].value.trim()
       }]);
     }
   }
 
-  for (let block of textAdmin.children) {
-    const inputs = block.querySelectorAll("input");
-    const text = inputs[0].value.trim();
-    const link = inputs[1].value.trim();
-
-    if (text) {
+  /* 텍스트 광고 저장 */
+  for(const block of textAdmin.children){
+    const inputs=block.querySelectorAll("input");
+    if(inputs[0].value.trim()){
       await supabaseClient.from("ads").insert([{
-        type: "text",
-        title: text,
-        image_url: "",
-        link_url: link
+        type:"text",
+        title:inputs[0].value.trim(),
+        link_url:inputs[1].value.trim()
       }]);
     }
   }
 
-  await supabaseClient.from("site_settings").delete().neq("id", 0);
-
-  await supabaseClient.from("site_settings").insert([{
-    banner_img: bannerImg.value.trim(),
-    banner_link: bannerLink.value.trim(),
-    owner_name: ownerName.value.trim(),
-    instagram: snsInstagram.value.trim(),
-    youtube: snsYoutube.value.trim(),
-    facebook: snsFacebook.value.trim(),
-    twitter: snsTwitter.value.trim()
-  }]);
-
-  alert("저장 완료");
-}
-
-function addSquareAd(img = "", link = "") {
-  const div = document.createElement("div");
-  div.innerHTML = `
-    <input value="${img}" placeholder="이미지 URL">
-    <input value="${link}" placeholder="클릭 링크">
-  `;
-  squareAdmin.appendChild(div);
-}
-
-function removeSquareAd() {
-  if (squareAdmin.lastElementChild) {
-    squareAdmin.removeChild(squareAdmin.lastElementChild);
+  /* 정방형 광고 저장 */
+  for(const block of squareAdmin.children){
+    const inputs=block.querySelectorAll("input");
+    if(inputs[0].value.trim()){
+      await supabaseClient.from("ads").insert([{
+        type:"square",
+        image_url:inputs[0].value.trim(),
+        link_url:inputs[1].value.trim()
+      }]);
+    }
   }
+
+  /* 배너 저장 */
+  await supabaseClient
+    .from("site_settings")
+    .upsert([{
+      id:1,
+      banner_img:document.getElementById("bannerImg").value.trim(),
+      banner_link:document.getElementById("bannerLink").value.trim()
+    }]);
+
+  alert("저장 완료 ✅");
 }
 
-function addImageAd(img = "", link = "") {
-  const div = document.createElement("div");
-  div.innerHTML = `
-    <input value="${img}" placeholder="이미지 URL">
-    <input value="${link}" placeholder="클릭 링크">
-  `;
-  imageAdmin.appendChild(div);
-}
-
-function removeImageAd() {
-  if (imageAdmin.lastElementChild) {
-    imageAdmin.removeChild(imageAdmin.lastElementChild);
-  }
-}
-
-function addTextAd(title = "", link = "") {
-  const div = document.createElement("div");
-  div.innerHTML = `
-    <input value="${title}" placeholder="텍스트">
-    <input value="${link}" placeholder="클릭 링크">
-  `;
-  textAdmin.appendChild(div);
-}
-
-function removeTextAd() {
-  if (textAdmin.lastElementChild) {
-    textAdmin.removeChild(textAdmin.lastElementChild);
-  }
-}
-
-new Sortable(imageAdmin, {
-  animation: 150,
-  ghostClass: 'dragging'
-});
-
-new Sortable(textAdmin, {
-  animation: 150,
-  ghostClass: 'dragging'
-});
+loadData();
 
 </script>
 
