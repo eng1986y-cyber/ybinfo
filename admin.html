@@ -82,16 +82,6 @@ button:hover{ background:#6bbfe0; }
 <input id="bannerLink" placeholder="배너 클릭 링크">
 </div>
 
-<!-- ================== 소유자 & SNS ================== -->
-<div class="section">
-<h2>소유자 & SNS 관리</h2>
-<input id="ownerName" placeholder="소유자 이름">
-<input id="instagram" placeholder="Instagram 링크">
-<input id="youtube" placeholder="YouTube 링크">
-<input id="facebook" placeholder="Facebook 링크">
-<input id="twitter" placeholder="X(트위터) 링크">
-</div>
-
 <!-- ================== 이미지 광고 ================== -->
 <div class="section">
 <h2>상단 이미지 광고</h2>
@@ -194,22 +184,16 @@ async function loadData(){
     });
   }
 
-const { data: settings } = await supabaseClient
-  .from("site_settings")
-  .select("*")
-  .limit(1);
+  const { data: settings } = await supabaseClient
+    .from("site_settings")
+    .select("*")
+    .limit(1);
 
-if(settings && settings.length>0){
-  bannerImg.value = settings[0].banner_img || "";
-  bannerLink.value = settings[0].banner_link || "";
-
-  ownerName.value = settings[0].owner_name || "";
-  instagram.value = settings[0].instagram || "";
-  youtube.value = settings[0].youtube || "";
-  facebook.value = settings[0].facebook || "";
-  twitter.value = settings[0].twitter || "";
+  if(settings && settings.length>0){
+    bannerImg.value=settings[0].banner_img||"";
+    bannerLink.value=settings[0].banner_link||"";
+  }
 }
-
 
 /* ================= 저장 ================= */
 
@@ -250,18 +234,13 @@ async function saveAll(){
     }
   }
 
-await supabaseClient
-  .from("site_settings")
-  .upsert([{
-    id:1,
-    banner_img: bannerImg.value.trim(),
-    banner_link: bannerLink.value.trim(),
-    owner_name: ownerName.value.trim(),
-    instagram: instagram.value.trim(),
-    youtube: youtube.value.trim(),
-    facebook: facebook.value.trim(),
-    twitter: twitter.value.trim()
-  }]);
+  await supabaseClient
+    .from("site_settings")
+    .upsert([{
+      id:1,
+      banner_img:bannerImg.value.trim(),
+      banner_link:bannerLink.value.trim()
+    }]);
 
   alert("저장 완료 ✅");
 }

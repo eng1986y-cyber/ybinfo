@@ -1,20 +1,17 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
-<title>정보 플랫폼</title>
+<meta charset="UTF-8">
+<title>검색 플랫폼</title>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&display=swap');
-
 body{
   margin:0;
   padding:20px;
-  background:#f5f5f5;
   font-family:Arial;
+  background:#f5f5f5;
 }
 
 .container{
@@ -47,6 +44,10 @@ body{
   cursor:pointer;
 }
 
+.search-box button:hover{
+  background:#6bbfe0;
+}
+
 /* 배너 */
 .top-banner{
   width:100%;
@@ -76,6 +77,7 @@ body{
   margin-bottom:40px;
 }
 
+/* 일반 이미지 광고 */
 .img-ad{
   height:100px;
   border-radius:12px;
@@ -89,6 +91,7 @@ body{
   object-fit:cover;
 }
 
+/* 텍스트 광고 */
 .text-ad{
   background:#fff;
   border:1px solid #ccc;
@@ -105,6 +108,7 @@ body{
   color:#fff;
 }
 
+/* 정방형 광고 */
 .square-ad{
   aspect-ratio:1/1;
   border-radius:12px;
@@ -118,55 +122,10 @@ body{
   object-fit:cover;
 }
 
-/* ===== 소유자 영역 ===== */
-
-<div id="ownerSection" style="
-  margin-top:40px;
-  padding:20px;
-  background:linear-gradient(to bottom,#ffffff,#e8edf3);
-  border-radius:10px;
-  text-align:center;
-"></div>
-
-.owner-section{
-  margin-top:50px;
-  padding:25px;
-  background:linear-gradient(
-    to bottom,
-    #fafafa 0%,
-    #eef3f8 60%,
-    #dbe4ee 100%
-  );
-  border-radius:14px;
-  color:#2c2c2c;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  flex-wrap:wrap;
-  box-shadow:0 10px 25px rgba(0,0,0,0.08);
-}
-
-.owner-name{
-  font-family:'Playfair Display', serif;
-  font-size:22px;
-  letter-spacing:1px;
-}
-
-.owner-sns a{
-  color:#666;
-  font-size:20px;
-  margin-left:15px;
-  transition:0.3s;
-}
-
-.owner-sns a:hover{
-  color:#87CEEB;
-  transform:translateY(-3px);
-}
-
-@media(max-width:768px){
-  .grid{ grid-template-columns:repeat(3,1fr); }
-  .owner-section{ flex-direction:column; gap:15px; }
+/* 검색 강조 */
+.highlight{
+  background:#87CEEB !important;
+  color:#fff;
 }
 </style>
 </head>
@@ -186,28 +145,19 @@ body{
 <div class="grid" id="textAds"></div>
 <div class="grid" id="bottomImageAds"></div>
 
-<div class="owner-section">
-  <div class="owner-name" id="ownerDisplay">관리자</div>
-  <div class="owner-sns">
-    <a id="instaLink" target="_blank"><i class="fab fa-instagram"></i></a>
-    <a id="ytLink" target="_blank"><i class="fab fa-youtube"></i></a>
-    <a id="fbLink" target="_blank"><i class="fab fa-facebook-f"></i></a>
-    <a id="twLink" target="_blank"><i class="fab fa-x-twitter"></i></a>
-  </div>
-</div>
-
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase.js"></script>
 
 <script>
+
 async function loadSite(){
 
-const imgBox = document.getElementById("imageAds");
-const txtBox = document.getElementById("textAds");
-const bottomBox = document.getElementById("bottomImageAds");
-const bannerBox = document.getElementById("topBanner");
+  const imgBox=document.getElementById("imageAds");
+  const txtBox=document.getElementById("textAds");
+  const bottomBox=document.getElementById("bottomImageAds");
+  const bannerBox=document.getElementById("topBanner");
 
   imgBox.innerHTML="";
   txtBox.innerHTML="";
@@ -221,28 +171,36 @@ const bannerBox = document.getElementById("topBanner");
 
   if(ads){
     ads.forEach(ad=>{
+
       if(ad.type==="image"){
-        imgBox.innerHTML+=`
-          <div class="img-ad">
-            <a href="${ad.link_url||'#'}" target="_blank">
-              <img src="${ad.image_url}">
-            </a>
-          </div>`;
-      }
-      if(ad.type==="text"){
-        txtBox.innerHTML+=`
-          <a class="text-ad" href="${ad.link_url||'#'}" target="_blank">
-            ${ad.title||"텍스트광고"}
+        const wrap=document.createElement("div");
+        wrap.className="img-ad";
+        wrap.innerHTML=`
+          <a href="${ad.link_url || '#'}" target="_blank">
+            <img src="${ad.image_url}">
           </a>`;
+        imgBox.appendChild(wrap);
       }
+
+      if(ad.type==="text"){
+        const a=document.createElement("a");
+        a.className="text-ad";
+        a.href=ad.link_url || "#";
+        a.target="_blank";
+        a.innerText=ad.title || "텍스트광고";
+        txtBox.appendChild(a);
+      }
+
       if(ad.type==="square"){
-        bottomBox.innerHTML+=`
-          <div class="square-ad">
-            <a href="${ad.link_url||'#'}" target="_blank">
-              <img src="${ad.image_url}">
-            </a>
-          </div>`;
+        const wrap=document.createElement("div");
+        wrap.className="square-ad";
+        wrap.innerHTML=`
+          <a href="${ad.link_url || '#'}" target="_blank">
+            <img src="${ad.image_url}">
+          </a>`;
+        bottomBox.appendChild(wrap);
       }
+
     });
   }
 
@@ -252,85 +210,50 @@ const bannerBox = document.getElementById("topBanner");
     .limit(1);
 
   if(settings && settings.length>0){
+
     const s=settings[0];
 
-document.getElementById("ownerDisplay").innerText = s.owner_name || "관리자";
-
-document.getElementById("instaLink").href = s.instagram || "#";
-document.getElementById("ytLink").href = s.youtube || "#";
-document.getElementById("fbLink").href = s.facebook || "#";
-document.getElementById("twLink").href = s.twitter || "#";
-
     if(s.banner_img){
-      bannerBox.innerHTML = s.banner_link
-      ? `<a href="${s.banner_link}" target="_blank"><img src="${s.banner_img}"></a>`
-      : `<img src="${s.banner_img}">`;
+      if(s.banner_link){
+        bannerBox.innerHTML=`
+          <a href="${s.banner_link}" target="_blank">
+            <img src="${s.banner_img}">
+          </a>`;
+      }else{
+        bannerBox.innerHTML=`
+          <img src="${s.banner_img}">`;
+      }
     }
   }
 }
 
 loadSite();
 
+/* 검색 기능 */
 function search(){
+  const keyword=document.getElementById("searchInput").value.trim().toLowerCase();
+  if(!keyword) return;
 
-  const keyword = document
-    .getElementById("searchInput")
-    .value
-    .toLowerCase()
-    .trim();
+  const ads=document.querySelectorAll(".text-ad");
+  let found=false;
 
-  const textAds = document.querySelectorAll(".text-ad");
-
-  textAds.forEach(ad=>{
-
-    const text = ad.innerText.toLowerCase();
-
-    // 기본 스타일 초기화
-    ad.style.border = "1px solid #ccc";
-    ad.style.background = "#fff";
-    ad.style.color = "#222";
-
-    if(keyword && text.includes(keyword)){
-      ad.style.border = "2px solid #87CEEB";
-      ad.style.background = "#e6f7ff";
-      ad.style.color = "#000";
+  ads.forEach(ad=>{
+    ad.classList.remove("highlight");
+    if(ad.innerText.toLowerCase().includes(keyword)){
+      ad.classList.add("highlight");
+      found=true;
     }
-
   });
 
+  if(!found){
+    alert("검색 결과 없음");
+  }
 }
 
 document.getElementById("searchInput")
-.addEventListener("keydown", function(e){
-  if(e.key === "Enter"){
-    search();
-  }
-});
-
-async function loadOwner(){
-
-  const { data } = await supabaseClient
-    .from("site_settings")
-    .select("*")
-    .limit(1);
-
-  if(data && data.length>0){
-
-    const s = data[0];
-
-    ownerSection.innerHTML = `
-      <h3>${s.owner_name || ""}</h3>
-      <div style="margin-top:10px;">
-        ${s.instagram ? `<a href="${s.instagram}" target="_blank">Instagram</a> | ` : ""}
-        ${s.youtube ? `<a href="${s.youtube}" target="_blank">YouTube</a> | ` : ""}
-        ${s.facebook ? `<a href="${s.facebook}" target="_blank">Facebook</a> | ` : ""}
-        ${s.twitter ? `<a href="${s.twitter}" target="_blank">X</a>` : ""}
-      </div>
-    `;
-  }
-}
-
-loadOwner();
+  .addEventListener("keypress",function(e){
+    if(e.key==="Enter") search();
+  });
 
 </script>
 
