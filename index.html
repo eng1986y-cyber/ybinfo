@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <meta charset="UTF-8">
@@ -185,6 +186,73 @@ body{
   color:#fff;
   transform:translateY(-4px);
   box-shadow:0 8px 18px rgba(0,0,0,0.15);
+}
+
+/* ================= 모바일 전용 ================= */
+@media (max-width:768px){
+
+  body{
+    padding:15px;
+  }
+
+  .container{
+    max-width:100%;
+  }
+
+  /* 검색 */
+  .search-box input{
+    width:100%;
+    margin-bottom:10px;
+  }
+
+  .search-box button{
+    width:100%;
+    margin-left:0;
+  }
+
+  /* 배너 */
+  .top-banner{
+    height:90px;
+  }
+
+  /* 그리드 → 2열 */
+  .grid{
+    grid-template-columns:repeat(2,1fr);
+    gap:8px;
+  }
+
+  .img-ad{
+    height:90px;
+  }
+
+  /* 텍스트 광고 */
+  .text-ad{
+    font-size:14px;
+    padding:10px;
+  }
+
+  /* 정방형 광고 */
+  .square-ad{
+    aspect-ratio:1/1;
+  }
+
+  /* 소유자 */
+  .owner-box{
+    margin-top:40px;
+    padding:18px;
+  }
+
+  .owner-name{
+    font-size:22px;
+  }
+
+  .owner-sns a{
+    width:42px;
+    height:42px;
+    font-size:18px;
+    margin:0 6px;
+  }
+
 }
 
 </style>
