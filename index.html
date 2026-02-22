@@ -127,6 +127,36 @@ body{
   background:#87CEEB !important;
   color:#fff;
 }
+
+/* ===== 소유자 영역 ===== */
+.owner-box{
+  margin-top:60px;
+  padding:20px;
+  background:#fff;
+  border-radius:12px;
+  text-align:center;
+  border:1px solid #ddd;
+}
+
+.owner-name{
+  font-size:20px;
+  font-weight:600;
+  margin-bottom:10px;
+  letter-spacing:1px;
+}
+
+.owner-sns a{
+  margin:0 8px;
+  font-size:18px;
+  color:#87CEEB;
+  text-decoration:none;
+  transition:0.2s;
+}
+
+.owner-sns a:hover{
+  color:#6bbfe0;
+}
+
 </style>
 </head>
 
@@ -144,6 +174,11 @@ body{
 <div class="grid" id="imageAds"></div>
 <div class="grid" id="textAds"></div>
 <div class="grid" id="bottomImageAds"></div>
+
+<div class="owner-box">
+  <div class="owner-name" id="ownerName"></div>
+  <div class="owner-sns" id="ownerSNS"></div>
+</div>
 
 </div>
 
@@ -225,6 +260,32 @@ async function loadSite(){
       }
     }
   }
+}
+
+// ===== 소유자 정보 =====
+if(s.owner_name){
+  document.getElementById("ownerName").innerText = s.owner_name;
+}
+
+const snsBox=document.getElementById("ownerSNS");
+snsBox.innerHTML="";
+
+if(s.owner_instagram){
+  snsBox.innerHTML+=`<a href="${s.owner_instagram}" target="_blank">
+    <i class="fab fa-instagram"></i>
+  </a>`;
+}
+
+if(s.owner_youtube){
+  snsBox.innerHTML+=`<a href="${s.owner_youtube}" target="_blank">
+    <i class="fab fa-youtube"></i>
+  </a>`;
+}
+
+if(s.owner_blog){
+  snsBox.innerHTML+=`<a href="${s.owner_blog}" target="_blank">
+    <i class="fas fa-blog"></i>
+  </a>`;
 }
 
 loadSite();
