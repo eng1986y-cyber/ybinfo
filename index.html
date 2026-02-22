@@ -131,9 +131,9 @@ body{
 /* ===== 소유자 영역 ===== */
 .owner-box{
   margin-top:60px;
-  padding:20px;
+  padding:25px;
   background:#fff;
-  border-radius:12px;
+  border-radius:14px;
   text-align:center;
   border:1px solid #ddd;
 }
@@ -141,13 +141,12 @@ body{
 .owner-name{
   font-size:20px;
   font-weight:600;
-  margin-bottom:10px;
-  letter-spacing:1px;
+  margin-bottom:12px;
 }
 
 .owner-sns a{
-  margin:0 8px;
-  font-size:18px;
+  margin:0 10px;
+  font-size:20px;
   color:#87CEEB;
   text-decoration:none;
   transition:0.2s;
@@ -156,7 +155,6 @@ body{
 .owner-sns a:hover{
   color:#6bbfe0;
 }
-
 </style>
 </head>
 
@@ -248,6 +246,7 @@ async function loadSite(){
 
     const s=settings[0];
 
+    /* 배너 */
     if(s.banner_img){
       if(s.banner_link){
         bannerBox.innerHTML=`
@@ -255,42 +254,38 @@ async function loadSite(){
             <img src="${s.banner_img}">
           </a>`;
       }else{
-        bannerBox.innerHTML=`
-          <img src="${s.banner_img}">`;
+        bannerBox.innerHTML=`<img src="${s.banner_img}">`;
       }
+    }
+
+    /* 소유자 */
+    document.getElementById("ownerName").innerText = s.owner_name || "";
+
+    const snsBox=document.getElementById("ownerSNS");
+    snsBox.innerHTML="";
+
+    if(s.owner_instagram){
+      snsBox.innerHTML+=`<a href="${s.owner_instagram}" target="_blank">
+        <i class="fab fa-instagram"></i>
+      </a>`;
+    }
+
+    if(s.owner_youtube){
+      snsBox.innerHTML+=`<a href="${s.owner_youtube}" target="_blank">
+        <i class="fab fa-youtube"></i>
+      </a>`;
+    }
+
+    if(s.owner_blog){
+      snsBox.innerHTML+=`<a href="${s.owner_blog}" target="_blank">
+        <i class="fas fa-blog"></i>
+      </a>`;
     }
   }
 }
 
-// ===== 소유자 정보 =====
-if(s.owner_name){
-  document.getElementById("ownerName").innerText = s.owner_name;
-}
-
-const snsBox=document.getElementById("ownerSNS");
-snsBox.innerHTML="";
-
-if(s.owner_instagram){
-  snsBox.innerHTML+=`<a href="${s.owner_instagram}" target="_blank">
-    <i class="fab fa-instagram"></i>
-  </a>`;
-}
-
-if(s.owner_youtube){
-  snsBox.innerHTML+=`<a href="${s.owner_youtube}" target="_blank">
-    <i class="fab fa-youtube"></i>
-  </a>`;
-}
-
-if(s.owner_blog){
-  snsBox.innerHTML+=`<a href="${s.owner_blog}" target="_blank">
-    <i class="fas fa-blog"></i>
-  </a>`;
-}
-
 loadSite();
 
-/* 검색 기능 */
 function search(){
   const keyword=document.getElementById("searchInput").value.trim().toLowerCase();
   if(!keyword) return;
