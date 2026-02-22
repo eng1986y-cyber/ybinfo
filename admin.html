@@ -2,153 +2,126 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<link rel="icon" href="data:,">
 <title>관리자 페이지</title>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
-body{font-family:Arial;padding:30px;background:#f5f5f5;}
-h1{margin-bottom:20px;}
+body{
+  font-family:Arial;
+  background:#f4f4f4;
+  padding:30px;
+}
+h1{margin-bottom:30px;}
 h2{margin-top:40px;}
-
-input{
-  width:100%;
-  height:36px;
-  margin-bottom:8px;
-  padding:0 8px;
-  box-sizing:border-box;
-}
-
-button{
-  height:40px;
-  padding:0 20px;
-  border:none;
-  border-radius:6px;
-  background:#87CEEB;
-  color:#fff;
-  cursor:pointer;
-  font-size:15px;
-}
-
-button:hover{background:#6bbfe0;}
-
 .section{
-  margin-bottom:35px;
   background:#fff;
   padding:20px;
+  margin-bottom:20px;
   border-radius:10px;
-  box-shadow:0 5px 15px rgba(0,0,0,0.05);
 }
-
-.save-btn{
-  width:260px;
-  height:48px;
-  font-size:16px;
-  margin:40px auto;
-  display:block;
+input{
+  width:100%;
+  height:35px;
+  margin-bottom:8px;
+  padding:5px;
+}
+button{
+  width:100%;
+  height:40px;
+  background:#222;
+  color:#fff;
+  border:none;
+  cursor:pointer;
+}
+button:hover{
+  background:#444;
 }
 </style>
 </head>
-
 <body>
 
 <h1>관리자 페이지</h1>
 
+<!-- 상단 배너 -->
 <div class="section">
-<h2>상단 배너</h2>
-<input id="bannerImg" placeholder="배너 이미지 URL">
-<input id="bannerLink" placeholder="배너 클릭 링크">
+<h2>상단 배너 관리</h2>
+<input id="top_title" placeholder="배너 제목">
+<input id="top_image" placeholder="이미지 URL">
+<input id="top_link" placeholder="링크 URL">
+<button onclick="saveTop()">저장</button>
 </div>
 
+<!-- 이미지 광고 -->
+<div class="section">
+<h2>이미지 광고 관리</h2>
+<input id="img_title" placeholder="광고 제목">
+<input id="img_image" placeholder="이미지 URL">
+<input id="img_link" placeholder="링크 URL">
+<button onclick="saveImageAd()">저장</button>
+</div>
+
+<!-- 텍스트 광고 -->
+<div class="section">
+<h2>텍스트 광고 관리</h2>
+<input id="text_title" placeholder="광고 제목">
+<input id="text_link" placeholder="링크 URL">
+<button onclick="saveTextAd()">저장</button>
+</div>
+
+<!-- 소유자 & SNS -->
 <div class="section">
 <h2>소유자 & SNS 관리</h2>
-<input id="ownerName" placeholder="소유자 이름">
-<input id="instagram" placeholder="Instagram 링크">
-<input id="youtube" placeholder="YouTube 링크">
-<input id="facebook" placeholder="Facebook 링크">
-<input id="twitter" placeholder="X(트위터) 링크">
+<input id="owner_name" placeholder="소유자 이름">
+<input id="sns_instagram" placeholder="인스타 URL">
+<input id="sns_youtube" placeholder="유튜브 URL">
+<button onclick="saveOwner()">저장</button>
 </div>
 
-<button class="save-btn" onclick="saveAll()">저장하기</button>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase.js"></script>
-
 <script>
+const supabase = window.supabase.createClient(
+  "https://puevyaupeytllaquecoc.supabase.co",
+  "YOUR_ANON_KEY"
+);
 
-/* =========================
-   데이터 불러오기
-========================= */
-
-async function loadData(){
-
-  const { data, error } = await supabaseClient
-    .from("site_settings")
-    .select("*")
-    .limit(1)
-    .maybeSingle();
-
-  if(error){
-    console.error(error);
-    alert("불러오기 실패");
-    return;
-  }
-
-  if(data){
-    document.getElementById("bannerImg").value = data.banner_img || "";
-    document.getElementById("bannerLink").value = data.banner_link || "";
-    document.getElementById("ownerName").value = data.owner_name || "";
-    document.getElementById("instagram").value = data.instagram || "";
-    document.getElementById("youtube").value = data.youtube || "";
-    document.getElementById("facebook").value = data.facebook || "";
-    document.getElementById("twitter").value = data.twitter || "";
-  }
+async function saveTop(){
+  await supabase.from("ads").insert({
+    type:"top",
+    title:document.getElementById("top_title").value,
+    image_url:document.getElementById("top_image").value,
+    link:document.getElementById("top_link").value
+  });
+  alert("저장완료");
 }
 
-/* =========================
-   저장 (항상 1개만 유지)
-========================= */
-
-async function saveAll(){
-
-  const payload = {
-    banner_img: document.getElementById("bannerImg").value.trim(),
-    banner_link: document.getElementById("bannerLink").value.trim(),
-    owner_name: document.getElementById("ownerName").value.trim(),
-    instagram: document.getElementById("instagram").value.trim(),
-    youtube: document.getElementById("youtube").value.trim(),
-    facebook: document.getElementById("facebook").value.trim(),
-    twitter: document.getElementById("twitter").value.trim()
-  };
-
-  try{
-
-    // 기존 데이터 삭제 (항상 1줄만 유지)
-    await supabaseClient
-      .from("site_settings")
-      .delete()
-      .neq("id",0);
-
-    // 새로 1줄 생성
-    const { error } = await supabaseClient
-      .from("site_settings")
-      .insert([payload]);
-
-    if(error){
-      console.error(error);
-      alert("저장 실패");
-      return;
-    }
-
-    alert("저장 완료 ✅");
-
-  }catch(e){
-    console.error(e);
-    alert("저장 실패");
-  }
+async function saveImageAd(){
+  await supabase.from("ads").insert({
+    type:"image",
+    title:document.getElementById("img_title").value,
+    image_url:document.getElementById("img_image").value,
+    link:document.getElementById("img_link").value
+  });
+  alert("저장완료");
 }
 
-loadData();
+async function saveTextAd(){
+  await supabase.from("ads").insert({
+    type:"text",
+    title:document.getElementById("text_title").value,
+    link:document.getElementById("text_link").value
+  });
+  alert("저장완료");
+}
 
+async function saveOwner(){
+  await supabase.from("owner").upsert({
+    id:1,
+    name:document.getElementById("owner_name").value,
+    instagram:document.getElementById("sns_instagram").value,
+    youtube:document.getElementById("sns_youtube").value
+  });
+  alert("저장완료");
+}
 </script>
 
 </body>
