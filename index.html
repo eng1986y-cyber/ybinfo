@@ -1,16 +1,36 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" href="data:,">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <meta charset="UTF-8">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>정보공유 플랫폼</title>
 
 <style>
+body{margin:0;padding:20px;font-family:Arial;background:#f5f5f5;}
+.container{max-width:1200px;margin:0 auto;}
 
-/* 이미지 팝업 */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  gap:10px;
+  margin-bottom:40px;
+}
+
+.square-ad{
+  aspect-ratio:1/1;
+  border-radius:12px;
+  overflow:hidden;
+  border:1px solid #ddd;
+}
+
+.square-ad img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  cursor:pointer;
+}
+
+/* 팝업 */
 .popup{
   display:none;
   position:fixed;
@@ -25,10 +45,7 @@
   max-width:90%;
   max-height:90%;
   border-radius:16px;
-  box-shadow:0 10px 40px rgba(0,0,0,0.4);
-  animation:fadeIn 0.3s ease;
 }
-
 .close-btn{
   position:absolute;
   top:30px;
@@ -37,314 +54,18 @@
   color:#fff;
   cursor:pointer;
 }
-
-@keyframes fadeIn{
-  from{opacity:0; transform:scale(0.9);}
-  to{opacity:1; transform:scale(1);}
-}
-
-body{
-  margin:0;
-  padding:20px;
-  font-family:Arial;
-  background:#f5f5f5;
-}
-
-.container{
-  max-width:1200px;
-  margin:0 auto;
-}
-
-/* 검색 */
-.search-box{
-  text-align:center;
-  margin-bottom:30px;
-}
-
-.search-box input{
-  width:320px;
-  height:46px;
-  border:2px solid #87CEEB;
-  border-radius:6px;
-  padding:0 12px;
-}
-
-.search-box input{
-  font-size:16px;
-}
-
-.search-box button{
-  height:46px;
-  width:160px;
-  margin-left:6px;
-  border:none;
-  border-radius:6px;
-  background:#87CEEB;
-  color:#fff;
-  cursor:pointer;
-}
-
-.search-box button:hover{
-  background:#6bbfe0;
-}
-
-/* 배너 */
-.top-banner{
-  width:100%;
-  height:120px;
-  margin:20px 0 30px;
-  border-radius:14px;
-  overflow:hidden;
-  border:2px solid #87CEEB;
-}
-
-.top-banner img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  transition:0.4s;
-}
-
-.top-banner:hover img{
-  transform:scale(1.05);
-}
-
-/* 그리드 */
-.grid{
-  display:grid;
-  grid-template-columns:repeat(6,1fr);
-  gap:10px;
-  margin-bottom:40px;
-}
-
-/* 일반 이미지 광고 */
-.img-ad{
-  height:100px;
-  border-radius:12px;
-  overflow:hidden;
-  border:1px solid #ddd;
-}
-
-.img-ad img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
-
-/* 텍스트 광고 */
-.text-ad{
-  background:#fff;
-  border:1px solid #ccc;
-  padding:12px;
-  text-align:center;
-  border-radius:8px;
-  text-decoration:none;
-  color:#222;
-  transition:0.2s;
-}
-
-.text-ad:hover{
-  background:#87CEEB;
-  color:#fff;
-}
-
-/* 정방형 광고 */
-.square-ad{
-  aspect-ratio:1/1;
-  border-radius:12px;
-  overflow:hidden;
-  border:1px solid #ddd;
-}
-
-.square-ad img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
-
-/* 검색 강조 */
-.highlight{
-  background:#87CEEB !important;
-  color:#fff;
-}
-
-/* ===== 소유자 영역 ===== */
-.owner-box{
-  margin-top:60px;
-  padding:25px;
-  background:#fff;
-  border-radius:14px;
-  text-align:center;
-  border:1px solid #ddd;
-}
-
-.owner-name{
-  font-family: 'Bahnschrift Light', 'Bahnschrift', Arial, sans-serif;
-  font-size:11px;
-  font-weight:300;
-  letter-spacing:2px;
-  margin-bottom:11px;
-  color:#222;
-  position:relative;
-  display:inline-block;
-}
-
-.owner-name::after{
-  content:"";
-  display:block;
-  width:60%;
-  height:2px;
-  background:#87CEEB;
-  margin:8px auto 0;
-  border-radius:2px;
-}
-
-.owner-sns{
-  margin-top:10px;
-}
-
-.owner-sns a{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  width:48px;
-  height:48px;
-  margin:0 8px;
-  border-radius:50%;
-  background:#fff;
-  border:2px solid #87CEEB;
-  color:#87CEEB;
-  font-size:20px;
-  text-decoration:none;
-  transition:all 0.3s ease;
-}
-
-.owner-sns a:hover{
-  background:#87CEEB;
-  color:#fff;
-  transform:translateY(-4px);
-  box-shadow:0 8px 18px rgba(0,0,0,0.15);
-}
-
-/* ================= 모바일 전용 ================= */
-@media (max-width:768px){
-
-  body{
-    padding:15px;
-  }
-
-  .search-box{
-    display:flex;
-    flex-direction:column;
-  }
-
-  .search-box input,
-  .search-box button{
-    width:100%;
-    height:48px;
-    box-sizing:border-box;
-  }
-
-  .search-box button{
-    margin:8px 0 0 0;
-  }
-
-  /* 배너 */
-  .top-banner{
-    height:90px;
-  }
-
-  /* 그리드 → 2열 */
-  .grid{
-    grid-template-columns:repeat(2,1fr);
-    gap:8px;
-  }
-
-  .img-ad{
-    height:90px;
-  }
-
-  .text-ad{
-    font-size:14px;
-    padding:10px;
-  }
-
-  .owner-box{
-    margin-top:40px;
-    padding:18px;
-  }
-
-  .owner-name{
-    font-size:22px;
-  }
-
-  .owner-sns a{
-    width:42px;
-    height:42px;
-    font-size:18px;
-    margin:0 6px;
-  }
-
-  /* ===== 모바일 플로팅 네비 ===== */
-  .mobile-nav{
-    position:fixed;
-    bottom:20px;
-    left:50%;
-    transform:translateX(-50%);
-    display:flex;
-    gap:20px;
-    background:#fff;
-    padding:10px 20px;
-    border-radius:50px;
-    box-shadow:0 8px 20px rgba(0,0,0,0.15);
-    z-index:999;
-  }
-
-  .mobile-nav button{
-    width:50px;
-    height:50px;
-    border-radius:50%;
-    border:none;
-    background:#87CEEB;
-    color:#fff;
-    font-size:20px;
-    cursor:pointer;
-  }
-
-  .mobile-nav button:active{
-    transform:scale(0.95);
-  }
-
-}
-
-/* PC에서는 완전 숨김 */
-.mobile-nav{
-  display:none;
-}
-
 </style>
 </head>
 
 <body>
 
 <div class="container">
-
-<div class="search-box">
-  <input id="searchInput" placeholder="검색어 입력">
-  <button onclick="search()">검색</button>
-</div>
-
-<div class="top-banner" id="topBanner"></div>
-
-<div class="grid" id="imageAds"></div>
-<div class="grid" id="textAds"></div>
 <div class="grid" id="bottomImageAds"></div>
-
-<div class="owner-box">
-  <div class="owner-name" id="ownerName"></div>
-  <div class="owner-sns" id="ownerSNS"></div>
 </div>
 
+<div id="imgPopup" class="popup" onclick="closePopup()">
+  <span class="close-btn">&times;</span>
+  <img id="popupImage">
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -353,10 +74,8 @@ body{
 <script>
 
 function openPopup(src){
-  const popup=document.getElementById("imgPopup");
-  const img=document.getElementById("popupImage");
-  img.src=src;
-  popup.style.display="flex";
+  document.getElementById("popupImage").src=src;
+  document.getElementById("imgPopup").style.display="flex";
 }
 
 function closePopup(){
@@ -365,15 +84,8 @@ function closePopup(){
 
 async function loadSite(){
 
-  const imgBox=document.getElementById("imageAds");
-  const txtBox=document.getElementById("textAds");
   const bottomBox=document.getElementById("bottomImageAds");
-  const bannerBox=document.getElementById("topBanner");
-
-  imgBox.innerHTML="";
-  txtBox.innerHTML="";
   bottomBox.innerHTML="";
-  bannerBox.innerHTML="";
 
   const { data: ads } = await supabaseClient
     .from("ads")
@@ -382,137 +94,30 @@ async function loadSite(){
 
   if(ads){
     ads.forEach(ad=>{
+      if(ad.type==="square"){
 
-if(ad.type==="square"){
-  const wrap=document.createElement("div");
-  wrap.className="square-ad";
+        const wrap=document.createElement("div");
+        wrap.className="square-ad";
 
-  if(ad.link_url){
-    wrap.innerHTML=`
-      <a href="${ad.link_url}" target="_blank">
-        <img src="${ad.image_url}">
-      </a>
-    `;
-  } else {
-    wrap.innerHTML=`
-      <img src="${ad.image_url}" onclick="openPopup('${ad.popup_url || ad.image_url}')">
-    `;
-  }
+        if(ad.link_url){
+          wrap.innerHTML=`
+            <a href="${ad.link_url}" target="_blank">
+              <img src="${ad.image_url}">
+            </a>`;
+        }else{
+          wrap.innerHTML=`
+            <img src="${ad.image_url}"
+                 onclick="openPopup('${ad.popup_url || ad.image_url}')">`;
+        }
 
-  bottomBox.appendChild(wrap);
-}
-
-      if(ad.type==="text"){
-        const a=document.createElement("a");
-        a.className="text-ad";
-        a.href=ad.link_url || "#";
-        a.target="_blank";
-        a.innerText=ad.title || "텍스트광고";
-        txtBox.appendChild(a);
+        bottomBox.appendChild(wrap);
       }
-
     });
-  }
-
-  const { data: settings } = await supabaseClient
-    .from("site_settings")
-    .select("*")
-    .limit(1);
-
-  if(settings && settings.length>0){
-
-    const s=settings[0];
-
-    /* 배너 */
-    if(s.banner_img){
-      if(s.banner_link){
-        bannerBox.innerHTML=`
-          <a href="${s.banner_link}" target="_blank">
-            <img src="${s.banner_img}">
-          </a>`;
-      }else{
-        bannerBox.innerHTML=`<img src="${s.banner_img}">`;
-      }
-    }
-
-    /* 소유자 */
-    document.getElementById("ownerName").innerText = s.owner_name || "";
-
-    const snsBox=document.getElementById("ownerSNS");
-    snsBox.innerHTML="";
-
-    if(s.owner_instagram){
-      snsBox.innerHTML+=`<a href="${s.owner_instagram}" target="_blank">
-        <i class="fab fa-instagram"></i>
-      </a>`;
-    }
-
-    if(s.owner_youtube){
-      snsBox.innerHTML+=`<a href="${s.owner_youtube}" target="_blank">
-        <i class="fab fa-youtube"></i>
-      </a>`;
-    }
-
-    if(s.owner_blog){
-      snsBox.innerHTML+=`<a href="${s.owner_blog}" target="_blank">
-        <i class="fas fa-blog"></i>
-      </a>`;
-    }
   }
 }
 
 loadSite();
 
-function search(){
-  const keyword=document.getElementById("searchInput").value.trim().toLowerCase();
-  if(!keyword) return;
-
-  const ads=document.querySelectorAll(".text-ad");
-  let found=false;
-
-  ads.forEach(ad=>{
-    ad.classList.remove("highlight");
-    if(ad.innerText.toLowerCase().includes(keyword)){
-      ad.classList.add("highlight");
-      found=true;
-    }
-  });
-
-  if(!found){
-    alert("검색 결과 없음");
-  }
-}
-
-document.getElementById("searchInput")
-  .addEventListener("keypress",function(e){
-    if(e.key==="Enter") search();
-  });
-
-function scrollToTop(){
-  window.scrollTo({top:0,behavior:"smooth"});
-}
-
-function focusSearch(){
-  document.getElementById("searchInput").focus();
-  window.scrollTo({top:0,behavior:"smooth"});
-}
-
 </script>
-
-<div class="mobile-nav">
-  <button onclick="scrollToTop()">
-    <i class="fas fa-home"></i>
-  </button>
-  <button onclick="focusSearch()">
-    <i class="fas fa-search"></i>
-  </button>
-</div>
-
-<!-- 이미지 팝업 -->
-<div id="imgPopup" class="popup" onclick="closePopup()">
-  <span class="close-btn">&times;</span>
-  <img id="popupImage">
-</div>
-
 </body>
 </html>

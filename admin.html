@@ -34,9 +34,7 @@ button{
 
 button:hover{ background:#6bbfe0; }
 
-.section{
-  margin-bottom:30px;
-}
+.section{ margin-bottom:30px; }
 
 .grid{
   display:grid;
@@ -49,7 +47,6 @@ button:hover{ background:#6bbfe0; }
   padding:10px;
   border:1px solid #ddd;
   border-radius:8px;
-  cursor:grab;
   position:relative;
 }
 
@@ -81,7 +78,6 @@ button:hover{ background:#6bbfe0; }
     padding:0 20px;
   }
 }
-
 </style>
 </head>
 
@@ -91,96 +87,52 @@ button:hover{ background:#6bbfe0; }
 
 <h1>관리자 페이지</h1>
 
-<!-- ================== 상단 배너 ================== -->
 <div class="section">
-<h2>상단 배너 관리</h2>
+<h2>상단 배너</h2>
 <input id="bannerImg" placeholder="배너 이미지 URL">
 <input id="bannerLink" placeholder="배너 클릭 링크">
 </div>
 
-<!-- ================== 소유자 정보 ================== -->
 <div class="section">
-<h2>소유자 정보 관리</h2>
+<h2>소유자 정보</h2>
 <input id="ownerNameInput" placeholder="소유자 이름">
 <input id="ownerInstagram" placeholder="인스타그램 URL">
 <input id="ownerYoutube" placeholder="유튜브 URL">
 <input id="ownerBlog" placeholder="블로그 URL">
 </div>
 
-<!-- ================== 이미지 광고 ================== -->
-<div class="section">
-<h2>상단 이미지 광고</h2>
-<button onclick="addImageAd()">추가 +</button>
-<div class="grid" id="imageAdmin"></div>
-</div>
-
-<!-- ================== 텍스트 광고 ================== -->
 <div class="section">
 <h2>텍스트 광고</h2>
 <button onclick="addTextAd()">추가 +</button>
 <div class="grid" id="textAdmin"></div>
 </div>
 
-<!-- ================== 정방형 광고 ================== -->
 <div class="section">
-<h2>하단 정방형 광고</h2>
+<h2>정방형 광고</h2>
 <button onclick="addSquareAd()">추가 +</button>
 <div class="grid" id="squareAdmin"></div>
 </div>
 
 <button class="save-btn" onclick="saveAll()">저장하기</button>
 
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase.js"></script>
 
 <script>
 
-const imageAdmin=document.getElementById("imageAdmin");
 const textAdmin=document.getElementById("textAdmin");
 const squareAdmin=document.getElementById("squareAdmin");
-
-const bannerImg=document.getElementById("bannerImg");
-const bannerLink=document.getElementById("bannerLink");
-
-const ownerNameInput=document.getElementById("ownerNameInput");
-const ownerInstagram=document.getElementById("ownerInstagram");
-const ownerYoutube=document.getElementById("ownerYoutube");
-const ownerBlog=document.getElementById("ownerBlog");
-
-let dragItem=null;
-
-/* ================= 공통 카드 생성 ================= */
 
 function createCard(innerHTML){
   const div=document.createElement("div");
   div.className="card";
-  div.draggable=true;
   div.innerHTML=`
     <button class="delete-btn" onclick="this.parentElement.remove()">삭제</button>
     ${innerHTML}
   `;
-
-  div.addEventListener("dragstart",()=>dragItem=div);
-  div.addEventListener("dragover",e=>e.preventDefault());
-  div.addEventListener("drop",function(){
-    if(dragItem!==div){
-      div.parentNode.insertBefore(dragItem,div);
-    }
-  });
-
   return div;
-}
-
-/* ================= 추가 ================= */
-
-function addSquareAd(img="",link="",popup=""){
-  squareAdmin.appendChild(
-    createCard(`
-      <input value="${img}" placeholder="정방형 이미지 URL">
-      <input value="${popup}" placeholder="팝업용 이미지 URL">
-      <input value="${link}" placeholder="클릭 링크 (비워두면 팝업)">
-    `)
-  );
 }
 
 function addTextAd(title="",link=""){
@@ -192,7 +144,15 @@ function addTextAd(title="",link=""){
   );
 }
 
-/* ================= 불러오기 ================= */
+function addSquareAd(img="",popup="",link=""){
+  squareAdmin.appendChild(
+    createCard(`
+      <input value="${img}" placeholder="정방형 이미지 URL">
+      <input value="${popup}" placeholder="팝업용 이미지 URL (없으면 기본이미지)">
+      <input value="${link}" placeholder="클릭 링크 (있으면 새창이동)">
+    `)
+  );
+}
 
 async function loadData(){
 
@@ -203,9 +163,8 @@ async function loadData(){
 
   if(ads){
     ads.forEach(ad=>{
-      if(ad.type==="image") addImageAd(ad.image_url,ad.link_url);
       if(ad.type==="text") addTextAd(ad.title,ad.link_url);
-      if(ad.type==="square") addSquareAd(ad.image_url,ad.link_url);
+      if(ad.type==="square") addSquareAd(ad.image_url,ad.popup_url,ad.link_url);
     });
   }
 
@@ -216,10 +175,8 @@ async function loadData(){
 
   if(settings && settings.length>0){
     const s=settings[0];
-
     bannerImg.value=s.banner_img||"";
     bannerLink.value=s.banner_link||"";
-
     ownerNameInput.value=s.owner_name||"";
     ownerInstagram.value=s.owner_instagram||"";
     ownerYoutube.value=s.owner_youtube||"";
@@ -227,23 +184,9 @@ async function loadData(){
   }
 }
 
-/* ================= 저장 ================= */
-
 async function saveAll(){
 
   await supabaseClient.from("ads").delete().neq("id",0);
-
-for(const block of squareAdmin.children){
-  const i=block.querySelectorAll("input");
-  if(i[0].value.trim()){
-    await supabaseClient.from("ads").insert([{
-      type:"square",
-      image_url:i[0].value.trim(),
-      popup_url:i[1].value.trim(),
-      link_url:i[2].value.trim()
-    }]);
-  }
-}
 
   for(const block of textAdmin.children){
     const i=block.querySelectorAll("input");
@@ -256,17 +199,27 @@ for(const block of squareAdmin.children){
     }
   }
 
-  await supabaseClient
-    .from("site_settings")
-    .upsert([{
-      id:1,
-      banner_img:bannerImg.value.trim(),
-      banner_link:bannerLink.value.trim(),
-      owner_name:ownerNameInput.value.trim(),
-      owner_instagram:ownerInstagram.value.trim(),
-      owner_youtube:ownerYoutube.value.trim(),
-      owner_blog:ownerBlog.value.trim()
-    }]);
+  for(const block of squareAdmin.children){
+    const i=block.querySelectorAll("input");
+    if(i[0].value.trim()){
+      await supabaseClient.from("ads").insert([{
+        type:"square",
+        image_url:i[0].value.trim(),
+        popup_url:i[1].value.trim(),
+        link_url:i[2].value.trim()
+      }]);
+    }
+  }
+
+  await supabaseClient.from("site_settings").upsert([{
+    id:1,
+    banner_img:bannerImg.value.trim(),
+    banner_link:bannerLink.value.trim(),
+    owner_name:ownerNameInput.value.trim(),
+    owner_instagram:ownerInstagram.value.trim(),
+    owner_youtube:ownerYoutube.value.trim(),
+    owner_blog:ownerBlog.value.trim()
+  }]);
 
   alert("저장 완료 ✅");
 }
@@ -274,6 +227,5 @@ for(const block of squareAdmin.children){
 loadData();
 
 </script>
-
 </body>
 </html>
