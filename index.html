@@ -98,26 +98,6 @@ body{margin:0;padding:20px;font-family:Arial;background:#f5f5f5;}
 }
 
 /* ================= 모바일 최적화 ================= */
-
-@media (max-width:768px){
-
-  .container{
-    display:flex;
-    flex-direction:column;
-  }
-
-  /* 배너를 위로 */
-  .top-banner{
-    order:1;
-  }
-
-  /* 검색창을 그 아래 */
-  .search-box{
-    order:2;
-  }
-
-}
-
 @media (max-width:768px){
 
   body{
@@ -125,8 +105,18 @@ body{margin:0;padding:20px;font-family:Arial;background:#f5f5f5;}
   }
 
   .container{
+    display:flex;
+    flex-direction:column;
     max-width:100%;
   }
+
+  /* ===== 순서 완전 재정렬 ===== */
+  .top-banner{ order:1; }
+  .search-box{ order:2; }
+  #imageAds{ order:3; }
+  #textAds{ order:4; }
+  #bottomImageAds{ order:5; }
+  .owner-box{ order:6; }
 
   /* 검색창 세로 정렬 */
   .search-box{
@@ -146,12 +136,13 @@ body{margin:0;padding:20px;font-family:Arial;background:#f5f5f5;}
     margin-left:0;
   }
 
-  /* 배너 줄이기 */
+  /* 배너 */
   .top-banner{
     height:90px;
+    margin-top:0;
   }
 
-  /* 모든 그리드 2열로 */
+  /* 그리드 2열 */
   .grid{
     grid-template-columns:repeat(2,1fr);
     gap:8px;
@@ -166,11 +157,6 @@ body{margin:0;padding:20px;font-family:Arial;background:#f5f5f5;}
     padding:10px;
   }
 
-  .square-ad{
-    border-radius:10px;
-  }
-
-  /* 소유자 */
   .owner-box{
     margin-top:40px;
     padding:18px;
@@ -178,11 +164,6 @@ body{margin:0;padding:20px;font-family:Arial;background:#f5f5f5;}
 
   .owner-name{
     font-size:18px;
-  }
-
-  .owner-sns a{
-    font-size:20px;
-    margin:0 6px;
   }
 
 }
