@@ -136,6 +136,7 @@ body{
   border-radius:11px;
   text-align:center;
   border:1px solid #ddd;
+  position:relative;
 }
 
 .owner-name{
@@ -160,23 +161,18 @@ body{
 }
 
 .owner-sns{
-  margin-top:10px;
+  position:absolute;
+  right:15px;
+  bottom:15px;
+  display:flex;
+  gap:8px;
 }
 
 .owner-sns a{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  width:48px;
-  height:48px;
-  margin:0 8px;
-  border-radius:50%;
-  background:#fff;
-  border:2px solid #87CEEB;
-  color:#87CEEB;
-  font-size:20px;
-  text-decoration:none;
-  transition:all 0.3s ease;
+  width:28px;
+  height:28px;
+  font-size:14px;
+  border-width:1.5px;
 }
 
 .owner-sns a:hover{
