@@ -341,6 +341,18 @@ body{
   border-color:#C9A227 !important;
 }
 
+.site-description{
+  margin-top:60px;
+  padding:30px;
+  background:#ffffff;
+  border-radius:12px;
+  border:1px solid #ddd;
+  text-align:center;
+  font-size:15px;
+  color:#444;
+  line-height:1.7;
+}
+
 </style>
 </head>
 
@@ -358,7 +370,7 @@ body{
 <div class="grid" id="imageAds"></div>
 <div class="grid" id="textAds"></div>
 <div class="grid" id="bottomImageAds"></div>
-
+<div class="site-description" id="siteDescription"></div>
 <div class="owner-box">
   <div class="owner-name" id="ownerName"></div>
   <div class="owner-sns" id="ownerSNS"></div>
@@ -465,6 +477,8 @@ if(ad.type==="square"){
 
     /* 소유자 */
     document.getElementById("ownerName").innerText = s.owner_name || "";
+    document.getElementById("siteDescription").innerText =
+  s.site_description || "";
 
     const snsBox=document.getElementById("ownerSNS");
     snsBox.innerHTML="";
