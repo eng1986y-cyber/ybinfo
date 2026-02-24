@@ -288,6 +288,13 @@ body{
   display:none;
 }
 
+.ad-title{
+  margin-top:6px;
+  font-size:14px;
+  font-weight:600;
+  color:#222;
+}
+
 </style>
 </head>
 
@@ -340,14 +347,19 @@ async function loadSite(){
 
 if(ad.type==="image"){
   const wrap=document.createElement("div");
-  wrap.className="img-ad";
+  wrap.style.textAlign="center";
+
   wrap.innerHTML=`
-    <a href="${ad.link_url || '#'}" target="_blank">
-      <img src="${ad.image_url}">
-      <div style="text-align:center; padding:6px; font-weight:600;">
-        ${ad.main_title || ""}
-      </div>
-    </a>`;
+    <div class="img-ad">
+      <a href="${ad.link_url || '#'}" target="_blank">
+        <img src="${ad.image_url}">
+      </a>
+    </div>
+    <div class="ad-title">
+      ${ad.main_title || ""}
+    </div>
+  `;
+
   imgBox.appendChild(wrap);
 }
 
@@ -362,14 +374,19 @@ if(ad.type==="image"){
 
 if(ad.type==="square"){
   const wrap=document.createElement("div");
-  wrap.className="square-ad";
+  wrap.style.textAlign="center";
+
   wrap.innerHTML=`
-    <a href="${ad.link_url || '#'}" target="_blank">
-      <img src="${ad.image_url}">
-      <div style="text-align:center; padding:6px; font-weight:600;">
-        ${ad.main_title || ""}
-      </div>
-    </a>`;
+    <div class="square-ad">
+      <a href="${ad.link_url || '#'}" target="_blank">
+        <img src="${ad.image_url}">
+      </a>
+    </div>
+    <div class="ad-title">
+      ${ad.main_title || ""}
+    </div>
+  `;
+
   bottomBox.appendChild(wrap);
 }
 
