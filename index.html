@@ -411,14 +411,20 @@ if(ad.type==="image"){
 
   wrap.innerHTML=`
     <div class="img-ad">
-      <a href="${ad.link_url || '#'}" target="_blank">
-        <img src="${ad.image_url}">
-      </a>
-    </div>
-    <div class="ad-title">
-      ${ad.main_title || ""}
-    </div>
-  `;
+const link = ad.link_url 
+  ? `<a href="${ad.link_url}" target="_blank">
+       <img src="${ad.image_url}">
+     </a>`
+  : `<img src="${ad.image_url}">`;
+
+wrap.innerHTML=`
+  <div class="img-ad">
+    ${link}
+  </div>
+  <div class="ad-title">
+    ${ad.main_title || ""}
+  </div>
+`;
 
   imgBox.appendChild(wrap);
 }
@@ -440,14 +446,20 @@ if(ad.type==="square"){
 
   wrap.innerHTML=`
     <div class="square-ad">
-      <a href="${ad.link_url || '#'}" target="_blank">
-        <img src="${ad.image_url}">
-      </a>
-    </div>
-    <div class="ad-title">
-      ${ad.main_title || ""}
-    </div>
-  `;
+const link = ad.link_url 
+  ? `<a href="${ad.link_url}" target="_blank">
+       <img src="${ad.image_url}">
+     </a>`
+  : `<img src="${ad.image_url}">`;
+
+wrap.innerHTML=`
+  <div class="img-ad">
+    ${link}
+  </div>
+  <div class="ad-title">
+    ${ad.main_title || ""}
+  </div>
+`;
 
   bottomBox.appendChild(wrap);
 }
