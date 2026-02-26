@@ -346,6 +346,19 @@ body{
   line-height:1.7;
 }
 
+/* 기본은 숨김 (PC에서는 안보임) */
+.mobile-adsense{
+  display:none;
+  margin:20px 0;
+}
+
+/* 모바일에서만 노출 */
+@media (max-width:768px){
+  .mobile-adsense{
+    display:block;
+  }
+}
+
 </style>
 </head>
 
@@ -359,6 +372,13 @@ body{
 </div>
 
 <div class="top-banner" id="topBanner"></div>
+
+<!-- 📱 모바일 전용 애드센스 -->
+<div class="mobile-adsense">
+  
+  <!-- 여기에 애드센스 코드 붙여넣기 -->
+  
+</div>
 
 <div class="grid" id="imageAds"></div>
 <div class="grid" id="textAds"></div>
